@@ -8,7 +8,7 @@ module.exports = class Usercontroller{
 
         if(!name){
             res.status(422).json({message:'O nome é obrigatório.'})
-            return
+           return
         }
         if(!email){
             res.status(422).json({message:'O e-mail é obrigatório.'})
@@ -22,6 +22,16 @@ module.exports = class Usercontroller{
             res.status(422).json({message: 'A confirmação é obrigatória.'})
             return
         }
-
+        
+        if(password !== confirmpassword){
+            res.status(422).json({message: 'A senha e a confirmação precisam ser iguais, tente novamente.'})
+            return
+        }
+        //check is user exists
+        const userExistis = await User.findOne({where: {email: email}})
+        if(userExistis){
+            res.status(422).json({message: 'E-mail já cadastrado, por favor utilize outro e-mail.'})
+            return
+        }
     }
 }

@@ -9,6 +9,9 @@ const app = express()
 
 app.use(express.json())
 
+const UserRoutes = require('./routes/UserRoutes')
+app.use('/user', UserRoutes)
+
 
 
 // db.sync() confere/cria as tabelas no banco baseado nos models
@@ -18,11 +21,11 @@ sync()
 .then(() =>{
     // só libera o servidor DEPOIS que o banco já está garantido
     // assim evita requisições chegando antes do banco estar pronto
-    app.listen(3000)
+    console.log('Conectou com o banco.')
+    app.listen(3001)
 }).catch(err =>{
      // se o sync() falhar (banco fora do ar, senha errada no .env, etc)
     // cai aqui e mostra o erro no console — o app.listen() NÃO roda
     console.log(err)
 })
 
-app.listen(3001)

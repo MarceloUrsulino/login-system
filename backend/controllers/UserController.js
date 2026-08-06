@@ -14,6 +14,13 @@ module.exports = class Usercontroller{
             res.status(422).json({message:'O e-mail é obrigatório.'})
             return
         }
+        //check if email is valid
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if(!emailRegex.test(email)){
+            res.status(422).json({message: 'O e-mail precisa ser válido '})
+            return
+        }
+
         if(!password){
             res.status(422).json({message:'A senha é obrigatória.'})
             return

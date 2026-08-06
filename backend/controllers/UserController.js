@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { where } = require('sequelize')
 
 module.exports = class Usercontroller{
     static async register(req,res){
@@ -45,6 +46,32 @@ module.exports = class Usercontroller{
         
         })
         res.status(201).json({message: 'Usuário criado com sucesso.'})
+
+        
+        
     }
+        //function login
+        static async login(req, res){
+            const {email, password} = req.body
+
+            if(!email){
+                res.status(422).json({message:'O e-mail é obrigatório.'})
+            return
+            }
+            if(!password){
+                res.status(422).json({message: 'A senha é obrigatória'})
+                return
+            }
+
+            //check user in the database
+            const userExists = await User.findOne({where: {email: email}})
+            if(!userExists){
+                res.status(422).json({message: 'Usuário não encontrado.'})
+                return
+            }
+
+            const 
+        }
+
 
 }

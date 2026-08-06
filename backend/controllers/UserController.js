@@ -28,10 +28,23 @@ module.exports = class Usercontroller{
             return
         }
         //check is user exists
-        const userExistis = await User.findOne({where: {email: email}})
-        if(userExistis){
+        const userExists = await User.findOne({where: {email: email}})
+        if(userExists){
             res.status(422).json({message: 'E-mail já cadastrado, por favor utilize outro e-mail.'})
             return
         }
+        //encrypt a password with bcrypt - Create a password
+        const salt = await bcrypt.genSalt(12)
+        const passwordHash = await bcrypt.hash(password, salt)
+
+        //create a user
+        const user = await User.create({
+            name,
+            email,
+            password: passwordHash
+        
+        })
+        res.status(201).json({message: 'Usuário criado com sucesso.'})
     }
+
 }

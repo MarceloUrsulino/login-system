@@ -75,6 +75,14 @@ module.exports = class Usercontroller{
                 res.status(422).json({message: 'A senha está incorreta'})
                 return
             }
+
+            //create a token and return to user
+            const token = jwt.sign({
+                name: userExists.name,
+                id: userExists.id
+            }, process.env.JWT_SECRET )
+            
+            res.status(200).json({message: 'Você está conectado', token: token, userId: userExists.id,})
         }
 
 

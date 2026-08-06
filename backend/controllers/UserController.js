@@ -1,7 +1,6 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { where } = require('sequelize')
 
 module.exports = class Usercontroller{
     static async register(req,res){
@@ -83,7 +82,28 @@ module.exports = class Usercontroller{
             }, process.env.JWT_SECRET )
             
             res.status(200).json({message: 'Você está conectado', token: token, userId: userExists.id,})
+
+            
         }
+         //reset user password
+            static async resetPassword(req, res) {
+                const {email, newPassword} = req.body
+                const userExists = await User.findOne({where: {email: email}})
 
+                if(!userExists){
+                    res.status(422).json({message: 'Usuário não encontrado'})
+                    return
+                }
+                //encrypt the new password with bcrypt
+                 const salt = await bcrypt.genSalt(12)
+                 const passwordHash = await bcrypt.hash(newPassword, salt)
 
+                 //update the user's password in the database
+                 await User.update(
+                    {password: passwordHash},
+                    {where: {id: userExists.id}}
+                 )
+                 res.status(200).json({message: 'Nova senha atualizada com sucesso'})
+            }
+        
 }

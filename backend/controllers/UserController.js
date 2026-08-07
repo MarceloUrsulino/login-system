@@ -123,11 +123,9 @@ module.exports = class Usercontroller{
          //reset user password
             static async resetPassword(req, res) {
                 const {newPassword} = req.body
-                let email = req.body.email
-                
-                email = email.toLowerCase()
+                const id = req.user.id
 
-                const userExists = await User.findOne({where: {email: email}})
+                const userExists = await User.findOne({where: {id: id}})
 
                 if(!userExists){
                     res.status(422).json({message: 'Usuário não encontrado'})

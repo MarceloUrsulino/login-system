@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken')
 
 module.exports = class Usercontroller{
     static async register(req,res){
-        const {name, email, password, confirmpassword} = req.body
+        const {name, password, confirmpassword} = req.body
+        let email = req.body.email
 
         if(!name){
             res.status(422).json({message:'O nome é obrigatório.'})
@@ -17,9 +18,10 @@ module.exports = class Usercontroller{
         //check if email is valid
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if(!emailRegex.test(email)){
-            res.status(422).json({message: 'O e-mail precisa ser válido '})
+            res.status(422).json({message: 'O e-mail precisa ser válido.'})
             return
         }
+        email = email.toLowerCase()
 
         if(!password){
             res.status(422).json({message:'A senha é obrigatória.'})
@@ -58,12 +60,16 @@ module.exports = class Usercontroller{
     }
         //function login
         static async login(req, res){
-            const {email, password} = req.body
+            const {password} = req.body
+            let email = req.body.email
 
             if(!email){
                 res.status(422).json({message:'O e-mail é obrigatório.'})
             return
             }
+
+            email = email.toLowerCase()
+
             if(!password){
                 res.status(422).json({message: 'A senha é obrigatória'})
                 return
@@ -94,7 +100,10 @@ module.exports = class Usercontroller{
         }
          //reset user password
             static async resetPassword(req, res) {
-                const {email, newPassword} = req.body
+                const {newPassword} = req.body
+                let email = req.body.email
+                
+                email = email.toLowerCase()
                 const userExists = await User.findOne({where: {email: email}})
 
                 if(!userExists){

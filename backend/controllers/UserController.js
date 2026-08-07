@@ -2,6 +2,9 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+const validatePassword = require('../helpers/validate-password')
+
+
 module.exports = class Usercontroller{
     static async register(req,res){
         const {name, password, confirmpassword} = req.body
@@ -15,8 +18,10 @@ module.exports = class Usercontroller{
             res.status(422).json({message:'O e-mail é obrigatório.'})
             return
         }
+
         //check if email is valid
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
         if(!emailRegex.test(email)){
             res.status(422).json({message: 'O e-mail precisa ser válido.'})
             return
@@ -27,8 +32,25 @@ module.exports = class Usercontroller{
             res.status(422).json({message:'A senha é obrigatória.'})
             return
         }
+        //validation password
+
+        const validationPassword = validatePassword(password) 
+        if(!validationPassword.valid){
+            res.status(422).json({message: validationPassword.message})
+            return
+        }
+        
+
         if(!confirmpassword){
             res.status(422).json({message: 'A confirmação é obrigatória.'})
+            return
+        }
+
+         //validation password
+
+        const validationConfirmpassword = validatePassword(password) 
+        if(!validationConfirmpassword.valid){
+            res.status(422).json({message: validationConfirmpassword.message})
             return
         }
         
@@ -42,7 +64,7 @@ module.exports = class Usercontroller{
             res.status(422).json({message: 'E-mail já cadastrado, por favor utilize outro e-mail.'})
             return
         }
-        //encrypt a password with bcrypt - Create a password
+        //hash a password with bcrypt - create a password
         const salt = await bcrypt.genSalt(12)
         const passwordHash = await bcrypt.hash(password, salt)
 
@@ -104,12 +126,19 @@ module.exports = class Usercontroller{
                 let email = req.body.email
                 
                 email = email.toLowerCase()
+
                 const userExists = await User.findOne({where: {email: email}})
 
                 if(!userExists){
                     res.status(422).json({message: 'Usuário não encontrado'})
                     return
                 }
+
+                const validationPassword = validatePassword(newPassword) 
+                    if(!validationPassword.valid){
+                        res.status(422).json({message: validationPassword.message})
+                        return
+            }
                 //encrypt the new password with bcrypt
                  const salt = await bcrypt.genSalt(12)
                  const passwordHash = await bcrypt.hash(newPassword, salt)

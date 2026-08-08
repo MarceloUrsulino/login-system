@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const Usercontroller = require('../controllers/UserController')
+const UserController = require('../controllers/UserController')
 
 const checkToken = require('../middleware/checkToken')
 

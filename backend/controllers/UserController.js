@@ -45,14 +45,6 @@ module.exports = class Usercontroller{
             res.status(422).json({message: 'A confirmação é obrigatória.'})
             return
         }
-
-         //validation password
-
-        const validationConfirmpassword = validatePassword(password) 
-        if(!validationConfirmpassword.valid){
-            res.status(422).json({message: validationConfirmpassword.message})
-            return
-        }
         
         if(password !== confirmpassword){
             res.status(422).json({message: 'A senha e a confirmação precisam ser iguais, tente novamente.'})

@@ -68,6 +68,6 @@ POST /user/resetpassword
 - Redefinição de senha identifica o usuário pelo token, não por dado enviado no body
 - Validação de força de senha (mínimo 6 caracteres + 1 número)
 
-## Autor
+
 
 **Marcelo Ursulino** — [GitHub](https://github.com/MarceloUrsulino)

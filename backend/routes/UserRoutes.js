@@ -3,9 +3,9 @@ const UserController = require('../controllers/UserController')
 
 const checkToken = require('../middleware/checkToken')
 
-router.post('/register', Usercontroller.register)
-router.post('/login', Usercontroller.login)
-router.post('/resetpassword', checkToken, Usercontroller.resetPassword)
+router.post('/register', UserController.register)
+router.post('/login', UserController.login)
+router.post('/resetpassword', checkToken, UserController.resetPassword)
 
 
 

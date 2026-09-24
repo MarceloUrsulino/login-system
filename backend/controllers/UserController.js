@@ -2,6 +2,7 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+
 const validatePassword = require('../helpers/validate-password')
 
 
@@ -69,8 +70,6 @@ module.exports = class Usercontroller{
         })
         res.status(201).json({message: 'Usuário criado com sucesso.'})
 
-        
-        
     }
         //function login
         static async login(req, res){

@@ -32,17 +32,25 @@ describe('Validate-password', () => {
     })
 })
     */
+const Usercontroller = require('../controllers/UserController')
 
-describe('Register', () =>  {
-    test('Os campos são obrigatórios', () => {
-        const req = {
-            body: {
-                name:'',
-                email: 'testando@gmail.com',
-                password: '1234bc',
-                confirmpassword: '1234bc'
-
-            } 
-        }
+    describe('Register', () =>  {
+        test('Os campos são obrigatórios', async () => {
+            const req = {
+                body: {
+                    name:'',
+                    email: 'testando@gmail.com',
+                    password: '1234bc',
+                    confirmpassword: '1234bc'
+                } 
+            }
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            }
+            await Usercontroller.register(req,res)
+            
+            expect(res.status).toHaveBeenCalledWith(422)
+            expect(res.json).toHaveBeenCalledWith({message: 'O nome é obrigatório.'})
+        })
     })
-})

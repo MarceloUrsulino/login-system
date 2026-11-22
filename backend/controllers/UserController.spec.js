@@ -1,7 +1,8 @@
 
 const Usercontroller = require('../controllers/UserController')
+const User = require('../models/User')
 
-jest.mock('../models/User.js', () => {   //MOCK PARA TESTE DE MÉTODOS EXTERNOS / BANCO findOne e create.
+jest.mock('../models/User.js', () => {   
     return {
         findOne: jest.fn(),
         create: jest.fn()
@@ -66,5 +67,27 @@ jest.mock('../models/User.js', () => {   //MOCK PARA TESTE DE MÉTODOS EXTERNOS 
 
             expect(res.status).toHaveBeenCalledWith(422)
             expect(res.json).toHaveBeenCalledWith({message: 'O e-mail precisa ser válido.'})
+       })
+        // Banco simulado: findOne devolve um usuário, então o e-mail "já existe"
+       test('Retorna 422 quando o e-mail já está cadastrado.', async () => {
+          const req = {
+             body: {
+                name: 'JUJU',
+                email: 'testando@gmail.com',
+                password: 'abc123abc',
+                confirmpassword: 'abc123abc'
+             }
+            }
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            }
+            User.findOne.mockResolvedValue({id: 1})
+
+            await Usercontroller.register(req,res)
+
+            expect(res.status).toHaveBeenCalledWith(422)
+            expect(res.json).toHaveBeenCalledWith({message: 'E-mail já cadastrado, por favor utilize outro e-mail.'})
+            expect(User.findOne).toHaveBeenCalled()
        })
     })

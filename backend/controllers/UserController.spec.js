@@ -35,7 +35,7 @@ describe('Validate-password', () => {
 const Usercontroller = require('../controllers/UserController')
 
     describe('Register', () =>  {
-        test('Os campos são obrigatórios', async () => {
+        test('O campo é obrigatório retornando 422 caso não for enviado', async () => {
             const req = {
                 body: {
                     name:'',
@@ -49,8 +49,26 @@ const Usercontroller = require('../controllers/UserController')
                 json: jest.fn()
             }
             await Usercontroller.register(req,res)
-            
+
             expect(res.status).toHaveBeenCalledWith(422)
             expect(res.json).toHaveBeenCalledWith({message: 'O nome é obrigatório.'})
+        })
+
+        test('Retorna 422 quando o email não é enviado.', async () => {
+           const req = {
+            body: {
+                name: 'JUJU',
+                email: '',
+                password: 'abc123abc',
+                confirmpassword: 'abc123abc'
+            }
+           }
+           const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+           }
+           await Usercontroller.register(req,res)
+           expect(res.status).toHaveBeenCalledWith(422)
+           expect(res.json).toHaveBeenCalledWith({message: 'O e-mail é obrigatório.'})
         })
     })

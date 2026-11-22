@@ -12,6 +12,11 @@ jest.mock('../models/User.js', () => {
 //TESTANDO O REGISTER
 
     describe('Register', () =>  { 
+        
+        beforeEach(() => {
+            jest.resetAllMocks()
+        })
+
         test('Retorna 422 quando o nome não é enviado.', async () => { 
             const req = {
                 body: {

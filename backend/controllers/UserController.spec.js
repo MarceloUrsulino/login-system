@@ -17,13 +17,15 @@ jest.mock('../models/User.js', () => {
     }
 })
 
+  beforeEach(() => {
+        jest.resetAllMocks()
+})
+
 //TESTANDO O REGISTER
 
     describe('Register', () =>  { 
 
-        beforeEach(() => {
-            jest.resetAllMocks()
-        })
+      
 
         test('Retorna 422 quando o nome não é enviado.', async () => { 
             const req = {
@@ -161,7 +163,7 @@ jest.mock('../models/User.js', () => {
             }
 
             await Usercontroller.login(req,res)
-            
+
             expect(res.status).toHaveBeenCalledWith(422)
             expect(res.json).toHaveBeenCalledWith({message: 'A senha é obrigatória.'})
 

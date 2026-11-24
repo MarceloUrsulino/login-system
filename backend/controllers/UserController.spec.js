@@ -129,3 +129,41 @@ jest.mock('../models/User.js', () => {
             expect(User.create).toHaveBeenCalledWith({name:'JUJU', email: 'testando@gmail.com', password:  'hash-falso'})
        })
     })
+
+    describe('Login', () => {
+        test('Retorna 422 quando o e-mail não é enviado.', async () => {
+            const req = {
+                body: {
+                    email: '',
+                    password: 'abcdef12345'
+                }
+            }
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            }
+
+            await Usercontroller.login(req,res)
+            expect(res.status).toHaveBeenCalledWith(422)
+            expect(res.json).toHaveBeenCalledWith({message: 'O e-mail é obrigatório.'})
+        })
+
+        test('Retorna 422 se a senha não for enviada.', async() => {
+            const req = {
+                body: {
+                    email: 'admin@gmail.com',
+                    password: ''
+                }
+            }
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            }
+
+            await Usercontroller.login(req,res)
+            
+            expect(res.status).toHaveBeenCalledWith(422)
+            expect(res.json).toHaveBeenCalledWith({message: 'A senha é obrigatória.'})
+
+        })
+    })

@@ -84,7 +84,7 @@ module.exports = class Usercontroller{
             email = email.toLowerCase()
 
             if(!password){
-                res.status(422).json({message: 'A senha é obrigatória'})
+                res.status(422).json({message: 'A senha é obrigatória.'})
                 return
             }
 

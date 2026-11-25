@@ -2,6 +2,13 @@
 const Usercontroller = require('../controllers/UserController')
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+jest.mock('jsonwebtoken', () => {
+    return {
+        sign: jest.fn()
+    }
+})
 
 jest.mock('bcrypt', () => {
     return {
@@ -209,5 +216,27 @@ jest.mock('../models/User.js', () => {
             expect(res.status).toHaveBeenCalledWith(422)
             expect(res.json).toHaveBeenCalledWith({message: 'A senha está incorreta.'})
             expect(bcrypt.compare).toHaveBeenCalledWith('abcdeee1235', 'testando')
+        })
+
+        test('Retorna 200 se o usuário estiver uma conta registrada.', async () => {
+            const req = {
+                body: {
+                    email: 'admin@gmail.com',
+                    password: 'admin'
+                }
+            }
+            const res = {
+                status : jest.fn().mockReturnThis(),
+                json: jest.fn()
+            }  
+            process.env.JWT_SECRET = 'segredo-teste'
+            User.findOne.mockResolvedValue({id: 1, name: 'admin', password: 'admin'}) 
+            bcrypt.compare.mockResolvedValue(true)
+            jwt.sign.mockReturnValue('falsoTokenExemploTeste')
+            await Usercontroller.login(req,res)
+            
+            expect(res.status).toHaveBeenCalledWith(200)
+            expect(res.json).toHaveBeenCalledWith({message: 'Você está conectado', token: 'falsoTokenExemploTeste', userId: 1,})
+            expect(jwt.sign).toHaveBeenCalledWith({name: 'admin', id: 1,}, process.env.JWT_SECRET)
         })
     })

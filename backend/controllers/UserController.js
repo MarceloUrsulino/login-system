@@ -97,7 +97,7 @@ module.exports = class Usercontroller{
             //check hash with password
             const checkPassword = await bcrypt.compare(password, userExists.password)
             if(!checkPassword){
-                res.status(422).json({message: 'A senha está incorreta'})
+                res.status(422).json({message: 'A senha está incorreta.'})
                 return
             }
 

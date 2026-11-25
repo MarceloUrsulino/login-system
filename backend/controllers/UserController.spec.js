@@ -6,14 +6,16 @@ const bcrypt = require('bcrypt')
 jest.mock('bcrypt', () => {
     return {
         genSalt: jest.fn(),
-        hash: jest.fn()
+        hash: jest.fn(),
+        compare: jest.fn()
     }
 })
 
 jest.mock('../models/User.js', () => {   
     return {
         findOne: jest.fn(),
-        create: jest.fn()
+        create: jest.fn(),
+        
     }
 })
 
@@ -186,5 +188,26 @@ jest.mock('../models/User.js', () => {
             expect(res.status).toHaveBeenCalledWith(422)
             expect(res.json).toHaveBeenCalledWith({message: 'Usuário não encontrado.'})
             expect(User.findOne).toHaveBeenCalled()
+        })
+
+        test('Retorna 422 quando a senha estiver incorreta.', async () => {
+            const req = {
+                body: {
+                    email: 'admin@gmail.com',
+                    password: 'abcdeee1235'
+                }
+            }
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            }
+            User.findOne.mockResolvedValue({password: 'testando'})
+            bcrypt.compare.mockResolvedValue(false)
+
+            await Usercontroller.login(req,res)
+
+            expect(res.status).toHaveBeenCalledWith(422)
+            expect(res.json).toHaveBeenCalledWith({message: 'A senha está incorreta.'})
+            expect(bcrypt.compare).toHaveBeenCalledWith('abcdeee1235', 'testando')
         })
     })

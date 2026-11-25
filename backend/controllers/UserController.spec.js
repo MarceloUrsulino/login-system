@@ -168,4 +168,23 @@ jest.mock('../models/User.js', () => {
             expect(res.json).toHaveBeenCalledWith({message: 'A senha é obrigatória.'})
 
         })
+
+        test('Retorna 422 quando o usuário não é encontrado.', async () => {
+            const req = {
+                body: {
+                    email: 'admin@gmail.com',
+                    password: 'abcdeee1235'
+                }
+            }
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            }
+            User.findOne.mockResolvedValue(null)
+
+            await Usercontroller.login(req,res)
+            expect(res.status).toHaveBeenCalledWith(422)
+            expect(res.json).toHaveBeenCalledWith({message: 'Usuário não encontrado.'})
+            expect(User.findOne).toHaveBeenCalled()
+        })
     })

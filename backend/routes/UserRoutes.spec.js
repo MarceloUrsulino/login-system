@@ -64,3 +64,31 @@ describe('POST /user/register', () => {
     })
 })
 
+describe('POST/user/login', () => {
+    test('Retorna 422 quando o email não é enviado', async () => {
+        const response = await supertest(app)
+        .post('/user/login').send({
+            email: '', password: '123456abcd'
+        })
+        expect(response.status).toBe(422)
+        expect(response.body).toEqual({message: 'O e-mail é obrigatório.'})
+    })
+
+    test('Retorna 200 se o usuário estiver uma conta.', async () => {
+
+        process.env.JWT_SECRET = 'segredo-teste'
+        User.findOne.mockResolvedValue({id: 1, name: 'admin', password: '123456abcd'}) 
+        bcrypt.compare.mockResolvedValue(true)
+        jwt.sign.mockReturnValue('falsoTokenExemploTeste')
+            
+        const response = await supertest(app)
+        .post('/user/login').send({
+            email: 'testes@gmail.com', password: '123456abcd'
+        })
+        expect(response.status).toBe(200)
+        expect(response.body).toEqual({message: 'Você está conectado', token: 'falsoTokenExemploTeste', userId: 1,})
+        expect(jwt.sign).toHaveBeenCalledWith({ name: 'admin', id: 1,}, process.env.JWT_SECRET)
+         
+    })
+})
+

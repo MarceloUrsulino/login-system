@@ -1,17 +1,10 @@
 require('dotenv').config()
-const express = require('express')
+
+const app = require('./app')
+
 
 const db = require('./db/conn')
 const User = require('./models/User')
-
-
-const app = express()
-
-app.use(express.json())
-
-const UserRoutes = require('./routes/UserRoutes')
-app.use('/user', UserRoutes)
-
 
 
 

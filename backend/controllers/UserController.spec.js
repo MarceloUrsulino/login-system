@@ -4,6 +4,8 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+
+
 jest.mock('jsonwebtoken', () => {
     return {
         sign: jest.fn()

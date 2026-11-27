@@ -80,6 +80,7 @@ describe('POST/user/login', () => {
         User.findOne.mockResolvedValue({id: 1, name: 'admin', password: '123456abcd'}) 
         bcrypt.compare.mockResolvedValue(true)
         jwt.sign.mockReturnValue('falsoTokenExemploTeste')
+        
             
         const response = await supertest(app)
         .post('/user/login').send({
@@ -87,7 +88,7 @@ describe('POST/user/login', () => {
         })
         expect(response.status).toBe(200)
         expect(response.body).toEqual({message: 'Você está conectado', token: 'falsoTokenExemploTeste', userId: 1,})
-        expect(jwt.sign).toHaveBeenCalledWith({ name: 'admin', id: 1,}, process.env.JWT_SECRET)
+        expect(jwt.sign).toHaveBeenCalledWith({ name: 'admin', id: 1,}, process.env.JWT_SECRET, {expiresIn: '4h'})
          
     })
 })

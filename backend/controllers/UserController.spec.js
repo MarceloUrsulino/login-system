@@ -239,6 +239,6 @@ jest.mock('../models/User.js', () => {
             
             expect(res.status).toHaveBeenCalledWith(200)
             expect(res.json).toHaveBeenCalledWith({message: 'Você está conectado', token: 'falsoTokenExemploTeste', userId: 1,})
-            expect(jwt.sign).toHaveBeenCalledWith({name: 'admin', id: 1,}, process.env.JWT_SECRET)
+            expect(jwt.sign).toHaveBeenCalledWith({name: 'admin', id: 1,}, process.env.JWT_SECRET, {expiresIn: '4h'})
         })
     })

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
     const checkToken = (req, res, next) =>{
         if(!req.headers.authorization){
-            res.status(400).json({message: 'Acesso negado.'})
+            res.status(401).json({message: 'Acesso negado.'})
             return
         }
         const authHeader = req.headers.authorization
@@ -11,13 +11,13 @@ const jwt = require('jsonwebtoken')
 
         try {
 
-        const verified = jwt.verify(token, process.env.JWT_SECRET)
+        const verified = jwt.verify(token, process.env.JWT_SECRET, {algorithms: ['HS256']})
         req.user = verified
         next()
 
         } catch (err) {
 
-            return res.status(400).json({ message: 'Token iválido.'})
+            return res.status(401).json({ message: 'Token inválido.'})
         }
         
     }
